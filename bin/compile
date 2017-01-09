@@ -1,0 +1,35 @@
+#!/usr/bin/env zsh
+set -e
+
+info() {
+  echo "       $*" || true
+}
+
+header() {
+  echo "" || true
+  echo "-----> $*" || true
+}
+
+error() {
+  echo " !     $*" >&2 || true
+  echo "" || true
+}
+
+header "Preparing build"
+if [ ! -f "package.json" ]; then
+  error "No package.json found" && false
+fi
+
+info "Downloading buildpack"
+local buildpack_url="https://github.com/heroku/heroku-buildpack-nodejs/archive/master.tar.gz"
+local code=$(curl -SsL --retry 5 --retry-max-time 15 "$buildpack_url" -o /tmp/buildpack.tar.gz --write-out "%{http_code}")
+if [ "$code" != "200" ]; then
+  error "Unable to download buildpack" && false
+fi
+tar xfz /tmp/buildpack.tar.gz -C /tmp
+
+info "Running buildpack"
+mkdir -p .heroku/cache
+rm -rf node_modules
+export NODE_MODULES_CACHE=true
+/tmp/heroku-buildpack-nodejs-master/bin/compile . .heroku/cache
