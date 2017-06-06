@@ -6,7 +6,8 @@ BUILD_DIR=`pwd`/.buildpack-nodejs
 export PATH=$BUILD_DIR/node/bin:$PATH
 
 if [ -z "$BIN" ]; then
-  echo "error: no tool specified to use" && false
+  echo "no tool specified to use" 1>&2
+  exit 1
 fi
 
 shift

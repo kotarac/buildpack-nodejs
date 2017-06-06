@@ -5,60 +5,63 @@ BUILD_DIR=`pwd`/.buildpack-nodejs
 mkdir -p $BUILD_DIR
 export PATH=$BUILD_DIR/node/bin:$PATH
 
-info() {
-  echo "$*" || true
+log() {
+  echo "  ○ $@"
 }
 
-error() {
-  echo "error: $*" >&2 || true
+abort() {
+  echo
+  echo "  $@" 1>&2
+  echo
+  exit 1
 }
 
 if [ ! -f "package.json" ]; then
-  error "package.json not found" && false
+  abort "package.json not found"
 fi
 
 req_node_version=$(buildpack-nodejs-json -s -b < package.json | egrep '\["engines","node"]' | awk '{print $2}' | tr -d \")
 if [ -z $req_node_version ]; then
-  error "node version not specified" && false
-fi
-
-req_npm_version=$(buildpack-nodejs-json -s -b < package.json | egrep '\["engines","npm"]' | awk '{print $2}' | tr -d \")
-if [ -z $req_npm_version ]; then
-  error "npm version not specified" && false
+  abort "node version not specified"
 fi
 
 node_version=$(curl -s --retry 5 --retry-max-time 15 https://semver.io/node/resolve/$req_node_version)
 if [ -z $node_version ]; then
-  error "can't resolve reqd node version" && false
+  abort "can't resolve reqd node version"
+fi
+
+req_npm_version=$(buildpack-nodejs-json -s -b < package.json | egrep '\["engines","npm"]' | awk '{print $2}' | tr -d \")
+if [ -z $req_npm_version ]; then
+  abort "npm version not specified"
 fi
 
 npm_version=$(curl -s --retry 5 --retry-max-time 15 https://semver.io/npm/resolve/$req_npm_version)
 if [ -z $npm_version ]; then
-  error "can't resolve reqd npm version" && false
+  abort "can't resolve reqd npm version"
 fi
 
-info "resolved node $node_version"
-info "resolved npm $npm_version"
+log "resolved node $node_version"
+log "resolved npm $npm_version"
 
 code=$(curl -SsL --retry 5 --retry-max-time 15 "https://nodejs.org/dist/v$node_version/node-v$node_version-linux-x64.tar.xz" -o /tmp/node.tar.xz --write-out "%{http_code}")
 if [ "$code" != "200" ]; then
-  error "can't download node" && false
+  abort "can't download node"
 fi
 
 tar xf /tmp/node.tar.xz -C $BUILD_DIR
 rm -rf $BUILD_DIR/node
 mv $BUILD_DIR/node-v$node_version-linux-x64 $BUILD_DIR/node
-info "installed node $node_version"
+log "installed node $node_version"
 
 npm -s -g i npm@$npm_version &> /dev/null
-info "installed npm $npm_version"
+log "installed npm $npm_version"
 
 if [ -d "node_modules" ]; then
-  npm -s rebuild > /dev/null
-  info "rebuilt native modules"
-  npm -s prune > /dev/null
-  info "pruned deps"
+  npm -s rebuild &> /dev/null
+  log "rebuilt native modules"
+  npm -s prune &> /dev/null
+  log "pruned deps"
 fi
 
-npm -s i > /dev/null
-info "installed deps"
+npm -s i &> /dev/null
+log "installed deps"
