@@ -29,7 +29,9 @@ fi
 tar xfz /tmp/buildpack.tar.gz -C /tmp
 
 info "Running buildpack"
-mkdir -p .heroku/cache
+DIR=`pwd`
+CACHE=`pwd`/.heroku/cache
+mkdir -p $CACHE
 rm -rf node_modules
 export NODE_MODULES_CACHE=true
-/tmp/heroku-buildpack-nodejs-master/bin/compile . .heroku/cache
+/tmp/heroku-buildpack-nodejs-master/bin/compile $DIR $CACHE
