@@ -21,8 +21,8 @@ if [ ! -f "package.json" ]; then
 fi
 
 info "Downloading buildpack"
-local buildpack_url="https://github.com/heroku/heroku-buildpack-nodejs/archive/master.tar.gz"
-local code=$(curl -SsL --retry 5 --retry-max-time 15 "$buildpack_url" -o /tmp/buildpack.tar.gz --write-out "%{http_code}")
+buildpack_url="https://github.com/heroku/heroku-buildpack-nodejs/archive/master.tar.gz"
+code=$(curl -SsL --retry 5 --retry-max-time 15 "$buildpack_url" -o /tmp/buildpack.tar.gz --write-out "%{http_code}")
 if [ "$code" != "200" ]; then
   error "Unable to download buildpack" && false
 fi
