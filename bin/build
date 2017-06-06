@@ -29,6 +29,7 @@ node_version=$(curl -s --retry 5 --retry-max-time 15 https://semver.io/node/reso
 if [ -z $node_version ]; then
   abort "can't resolve reqd node version"
 fi
+log "resolved node $req_node_version -> $node_version"
 
 req_npm_version=$(buildpack-nodejs-json -s -b < package.json | egrep '\["engines","npm"]' | awk '{print $2}' | tr -d \")
 if [ -z $req_npm_version ]; then
@@ -39,9 +40,7 @@ npm_version=$(curl -s --retry 5 --retry-max-time 15 https://semver.io/npm/resolv
 if [ -z $npm_version ]; then
   abort "can't resolve reqd npm version"
 fi
-
-log "resolved node $node_version"
-log "resolved npm $npm_version"
+log "resolved npm $req_npm_version -> $npm_version"
 
 code=$(curl -SsL --retry 5 --retry-max-time 15 "https://nodejs.org/dist/v$node_version/node-v$node_version-linux-x64.tar.xz" -o /tmp/node.tar.xz --write-out "%{http_code}")
 if [ "$code" != "200" ]; then
@@ -51,17 +50,10 @@ fi
 tar xf /tmp/node.tar.xz -C $BUILD_DIR
 rm -rf $BUILD_DIR/node
 mv $BUILD_DIR/node-v$node_version-linux-x64 $BUILD_DIR/node
-log "installed node $node_version"
+log "installed node"
 
 npm -s -g i npm@$npm_version &> /dev/null
-log "installed npm $npm_version"
-
-if [ -d "node_modules" ]; then
-  npm -s rebuild
-  log "rebuilt native modules"
-  npm -s prune
-  log "pruned deps"
-fi
+log "installed npm"
 
 npm -s i
 log "installed deps"
