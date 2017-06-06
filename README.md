@@ -1,10 +1,10 @@
 # buildpack-nodejs
 
-Wrapper around [heroku's node.js buildpack](https://github.com/heroku/heroku-buildpack-nodejs) for simple deployments.
+Simple buildpack for node.js.
 
-The compile script downloads the latest buildpack and executes the compile command.
+Reads `engines` from `package.json` and installs appropriate versions of node and npm.
 
-Run script is a simple wrapper for executing node/npm/yarn installed by the buildpack.
+Run script is a simple wrapper for executing node/npm installed by the buildpack.
 
 ## Install
 
@@ -21,9 +21,8 @@ make uninstall
 ## Usage
 While inside a node.js project directory:
 ```sh
-buildpack-nodejs-compile
+buildpack-nodejs-build
 buildpack-nodejs-run npm run test
-buildpack-nodejs-run yarn run build
 ```
 
 ## License

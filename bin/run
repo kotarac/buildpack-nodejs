@@ -2,15 +2,13 @@
 set -e
 
 BIN=$1
+BUILD_DIR=`pwd`/.buildpack-nodejs
+export PATH=$BUILD_DIR/node/bin:$PATH
 
-if [ -z "$1" ]; then
-  echo "no tool specified to use" && false
+if [ -z "$BIN" ]; then
+  echo "error: no tool specified to use" && false
 fi
 
 shift
 
-if [ "$BIN" = "npm" ]; then
-  .heroku/node/bin/npm "$@"
-else
-  .heroku/$BIN/bin/$BIN "$@"
-fi
+$BIN "$@"
