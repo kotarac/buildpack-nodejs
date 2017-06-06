@@ -57,11 +57,11 @@ npm -s -g i npm@$npm_version &> /dev/null
 log "installed npm $npm_version"
 
 if [ -d "node_modules" ]; then
-  npm -s rebuild &> /dev/null
+  npm -s rebuild
   log "rebuilt native modules"
-  npm -s prune &> /dev/null
+  npm -s prune
   log "pruned deps"
 fi
 
-npm -s i &> /dev/null
+npm -s i
 log "installed deps"
