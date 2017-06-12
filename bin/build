@@ -55,5 +55,5 @@ log "installed node"
 npm -s -g i npm@$npm_version &> /dev/null
 log "installed npm"
 
-npm -s i
+npm -s i $@
 log "installed deps"
