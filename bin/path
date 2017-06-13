@@ -1,0 +1,1 @@
+export PATH=.buildpack-nodejs/node/bin:$PATH
