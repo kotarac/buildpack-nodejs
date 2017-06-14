@@ -22,7 +22,8 @@ make uninstall
 While inside a node.js project directory:
 ```sh
 buildpack-nodejs-build
-buildpack-nodejs-run npm run test
+buildpack-nodejs-run npm i
+buildpack-nodejs-run -e .env npm run test
 ```
 
 ## License

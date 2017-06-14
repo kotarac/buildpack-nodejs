@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
+if [ "$1" == "-e" ]; then
+  if [ ! -f "$2" ]; then
+    echo "specified env file \"$2\" missing" 1>&2
+    exit 1
+  fi
+
+  for i in $(cat $2); do
+    export $i
+  done
+
+  shift
+  shift
+fi
+
 BIN=$1
 BUILD_DIR=`pwd`/.buildpack-nodejs
 export PATH=$BUILD_DIR/node/bin:$PATH
