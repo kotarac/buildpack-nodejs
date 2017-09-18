@@ -7,9 +7,9 @@ if [ "$1" == "-e" ]; then
     exit 1
   fi
 
-  for i in $(cat $2); do
-    export $i
-  done
+  while read -r i; do
+    export "$i"
+  done <$2
 
   shift
   shift
