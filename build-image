@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+time docker build --force-rm --rm -t buildpack-nodejs .
