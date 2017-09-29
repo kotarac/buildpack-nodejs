@@ -6,6 +6,8 @@ Reads `engines` from `package.json` and installs appropriate versions of node an
 
 Run script is a simple wrapper for executing node/npm installed by the buildpack.
 
+Depends on [jq](https://github.com/stedolan/jq).
+
 ## Install
 
 ```sh
