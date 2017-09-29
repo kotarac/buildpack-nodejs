@@ -20,7 +20,7 @@ if [ ! -f "package.json" ]; then
   abort "package.json not found"
 fi
 
-req_node_version=$(buildpack-nodejs-json -s -b < package.json | egrep '\["engines","node"]' | awk '{print $2}' | tr -d \")
+req_node_version=$(jq .engines.node < package.json | sed -e s/\"//g)
 if [ -z $req_node_version ]; then
   abort "node version not specified"
 fi
@@ -31,7 +31,7 @@ if [ -z $node_version ]; then
 fi
 log "resolved node $req_node_version -> $node_version"
 
-req_npm_version=$(buildpack-nodejs-json -s -b < package.json | egrep '\["engines","npm"]' | awk '{print $2}' | tr -d \")
+req_npm_version=$(jq .engines.npm < package.json | sed -e s/\"//g)
 if [ -z $req_npm_version ]; then
   abort "npm version not specified"
 fi
