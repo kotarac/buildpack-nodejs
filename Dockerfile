@@ -1,7 +1,8 @@
-FROM buildpack-deps:jessie
+FROM buildpack-deps:stretch
 MAINTAINER Stipe Kotarac "stipe@kotarac.net"
 
-RUN apt-get update && \
+RUN \
+  apt-get update && \
   apt-get install -y --no-install-recommends jq && \
   rm -rf /var/lib/apt/lists/*
 RUN groupadd node && useradd -g node -s /bin/bash -d /node -m node
